@@ -1,17 +1,8 @@
-#############################################################################################################################################
-#
-#                                                             DEPOSIT ANALYTICS
-#
-#############################################################################################################################################
-
 # Gerard Mazi
-# Treasury
-# gerard.mazi@homestreet.com
-# 206.753.3685 
+# gerard.mazi@gmail.com
+# 862.221.2477
 
-#############################################################################################################################################
 # INITIAL DATA PREPARATION
-
 library(dplyr)
 library(data.table)
 library(ggplot2)
@@ -150,7 +141,7 @@ deposits =
     all.y = F
     )
 
-# Assign the latest available fed funds rate to new weekly records for which there is no fed funds rate available
+# Assign the latest available fed funds rate to new weekly records for which there is no rate 
 fed.funds = fed.funds[order(fed.funds$DATE),]
 deposits[is.na(deposits$FEDFUNDS),"FEDFUNDS"] = fed.funds[nrow(fed.funds), "FEDFUNDS"]
 
@@ -454,7 +445,7 @@ deposits$reg.surge =
     0
     )
 
-# Assing a Plan Number and Description to deposits that have missing values on those two fields. Link to Account Type Code/Description
+# Assing a Plan Number and Description to deposits that have missing values on those two fields
 deposits$Account.Instrument.Int.Plan.Number = 
   ifelse(
     deposits$Account.Instrument.Int.Plan.Number == 0,
@@ -568,7 +559,7 @@ max.month = max(deposits$year.month)
 
 
 
-#############################################################################################################################################
+######################################################################################################################
 # SURGE ANALYSIS (MONTHLY)
 
 # Calculate a surge balance for future aggregation and analysis
@@ -589,7 +580,7 @@ rm(surge)
 
 
 
-#############################################################################################################################################
+#########################################################################################################################
 # BETA ANALYSIS (MONTHLY) - Append the output to the existing data -
 
 # Aggregate by month, output and append the new data to the existing
@@ -616,7 +607,7 @@ rm(beta.trend)
 
 
 
-#############################################################################################################################################
+###################################################################################################################
 # DECAY ANALYSIS (WEEKLY/MONTHLY)
 
 # Aggregate by month and output weighted rate, class, deposit product
@@ -658,7 +649,7 @@ rm(decay)
 
 
 
-#############################################################################################################################################
+##########################################################################################################################
 # ATTRITIION ANALYSIS (AS NEEDED)
 
 # Relationship attriton
@@ -698,7 +689,7 @@ fwrite(attrition.account, 'Output/account_attrition.csv')
 rm(attrition.account)
 
 
-#############################################################################################################################################
+########################################################################################################################
 # CROSS-SELL RATIO (monthly or as needed)
 
 # Create lookup table that counts instances of deposit category types
@@ -789,7 +780,7 @@ cross_sell_ratio$cross_sell_ratio =
 
 fwrite(data.table(cross_sell_ratio), "Output/cross_sell_ratio.csv")
 
-#############################################################################################################################################
+##########################################################################################################################
 # CD MATURITIES AND RETENTION - RUN MONTLY, REPORT WEEKLY AND MONTHLY
 
 # Maturities
@@ -816,7 +807,7 @@ rm(cd_retention)
 
 
 
-#############################################################################################################################################
+########################################################################################################################
 # MONEY MARKET FLOW OF FUNDS ANALYSIS (as needed)
 
 # Consumer MM flows
@@ -849,7 +840,7 @@ rm(mm_flows)
 
 
 
-#############################################################################################################################################
+#######################################################################################################################
 # CONSUMER AGE ANALYTICS (ONE TIME)
 
 # Create a frequency distribution by count and by balance. Bind the two into one dataset for the latest period.  
@@ -911,7 +902,7 @@ rm(cust.bal, cust.age, age, age.count, age.bal, age.w, age.plot)
 
 
 
-#############################################################################################################################################
+#######################################################################################################################
 # MARGINAL COF (MONTHLY)
 
 # Current Promo Deposits
@@ -935,7 +926,7 @@ fwrite(
   "Output/promo.csv"
   )
 
-#############################################################################################################################################
+########################################################################################################################
 # BRANCH ANALYSIS (MONTHLY)
 
 branch = deposits
@@ -957,7 +948,7 @@ fwrite(data.table(branch), 'Output/branch.csv')
 rm(branch)
 
 
-#############################################################################################################################################
+##########################################################################################################################
 # UNINSURED DEPOSITS (> $250,000) (MONTHLY)
 
 high_bal = 
@@ -1037,9 +1028,7 @@ complete_out =
 
 write.csv(complete_out, "Output/complete_out.csv", row.names = FALSE)
 
-
-
-
+# Promo performance by branch
 options(scipen = 999)
 cd = read.csv('input/9mocd.csv')
 cd$Dollars_per_Cust = cd$New.Balance / cd$New.Count
@@ -1053,6 +1042,3 @@ ggplot(cd, aes(x = Existing.Count, y = New.Count, color = State)) +
   geom_abline(intercept = 0, slope = 1) + 
   scale_color_brewer(palette="Dark2") + 
   theme_minimal()
-  
-
-            
